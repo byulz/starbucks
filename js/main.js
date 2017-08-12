@@ -35,6 +35,8 @@
     playTogglePromotionBtn();
     windowScroll();
     checkSectionOffsetTop();
+    setReturnToPosition();
+    toTopBtnHandler();
   }
 
   function toggleTopCard() {
@@ -303,6 +305,14 @@
 
   function changeSecHandler() {
       console.log('현재 ' + _sb.currenSecIndnex);
+
+      returnToPosition('.season-product', 1, 4);
+      returnToPosition('.reserve', 1, 5);
+      returnToPosition('.favorite', 1, 6);
+      returnToPosition('.find-store', 1, 8);
+
+      resetReturnToPosition();
+      toggleToTop();
   }
 
   function checkSectionOffsetTop() {
@@ -314,5 +324,63 @@
       });
       console.log(_sb.secOffsetTop);
   }
+
+  function setReturnToPosition() {
+      $('.return-to-position').each(function () {
+          var x = 100;
+
+         if ($(this).hasClass('to-right')) { // 왼쪽에서 오른쪽으로 // 음수
+            x *= -1
+         } else if ($(this).hasClass('to-left')) { // 오른쪽에서 왼쪽으로 // 양수
+            x = Math.abs(x);
+         }
+
+          TweenMax.set(this, { x: x, opacity: 0});
+      });
+  }
+
+    function returnToPosition(sectionoSelector , duration, whichSectionIndex) {
+        if (_sb.currenSecIndnex === whichSectionIndex) {
+            $(sectionoSelector + ' .return-to-position').each(function (index) {
+                TweenMax.to(this, duration, {
+                    delay: index * .3,
+                    x: 0,
+                    opacity: 1
+                });
+            });
+        }
+    }
+
+    function resetReturnToPosition() {
+      if (_sb.currenSecIndnex <= 1){
+          setReturnToPosition();
+      }
+    }
+
+    function toTopBtnHandler() {
+      $('#to-top').on('click', function () {
+          toTop();
+      });
+    }
+
+    function toTop() {
+        TweenMax.to(window, .7, { scrollTo: 0 });
+    }
+
+    function toggleToTop() {
+      if (_sb.currenSecIndnex > 3) {
+          showToTop();
+      } else {
+          hideToTop();
+      }
+    }
+
+    function showToTop() {
+      $('#to-top').stop(false, true).fadeIn(400);
+    }
+
+    function hideToTop() {
+      $('#to-top').stop(false, true).fadeOut(400);
+    }
 
 }(jQuery));
